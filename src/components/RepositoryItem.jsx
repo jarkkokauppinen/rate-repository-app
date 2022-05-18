@@ -1,5 +1,7 @@
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Pressable } from 'react-native';
 import Text from './Text';
+import { useNavigate } from 'react-router-native';
+import * as Linking from 'expo-linking';
 
 const styles = StyleSheet.create({
   background: {
@@ -36,6 +38,13 @@ const styles = StyleSheet.create({
   },
   center: {
     alignItems: 'center'
+  },
+  button: {
+    backgroundColor: '#0366d6',
+    margin: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+    padding: 10
   }
 });
 
@@ -54,37 +63,56 @@ const count = (number) => {
 }
 
 const RepositoryItem = (props) => {
+  const navigate = useNavigate();
+
+  const view = () => {
+    navigate(`/${props.id}`, { replace: true });
+  };
+
+  const openGithub = () => {
+    Linking.openURL(props.url)
+  }
+
   return (
-    <View style={styles.background}>
-      <View style={styles.main}>
-        <Image style={styles.image} source={{uri: props.ownerAvatarUrl }} />
-        <View style={styles.specs}>
-          <Text fontWeight='bold'>{props.name}</Text>
-          <Text color='textSecondary' style={styles.text}>{props.description}</Text>
-          <Text style={styles.language}>{props.language}</Text>
-        </View>
-      </View>
-      <View>
-        <View style={styles.counts}>
-          <View style={styles.center}>
-            <Text fontWeight='bold'>{count(props.stars)}</Text>
-            <Text color='textSecondary'>Stars</Text>
-          </View>
-          <View style={styles.center}>
-            <Text fontWeight='bold'>{count(props.forks)}</Text>
-            <Text color='textSecondary'>Forks</Text>
-          </View>
-          <View style={styles.center}>
-            <Text fontWeight='bold'>{count(props.reviews)}</Text>
-            <Text color='textSecondary'>Reviews</Text>
-          </View>
-          <View style={styles.center}>
-            <Text fontWeight='bold'>{count(props.rating)}</Text>
-            <Text color='textSecondary'>Rating</Text>
+    <Pressable onPress={view}>
+      <View style={styles.background}>
+        <View style={styles.main}>
+          <Image style={styles.image} source={{uri: props.ownerAvatarUrl }} />
+          <View style={styles.specs}>
+            <Text fontWeight='bold'>{props.name}</Text>
+            <Text color='textSecondary' style={styles.text}>{props.description}</Text>
+            <Text style={styles.language}>{props.language}</Text>
           </View>
         </View>
+        <View>
+          <View style={styles.counts}>
+            <View style={styles.center}>
+              <Text fontWeight='bold'>{count(props.stars)}</Text>
+              <Text color='textSecondary'>Stars</Text>
+            </View>
+            <View style={styles.center}>
+              <Text fontWeight='bold'>{count(props.forks)}</Text>
+              <Text color='textSecondary'>Forks</Text>
+            </View>
+            <View style={styles.center}>
+              <Text fontWeight='bold'>{count(props.reviews)}</Text>
+              <Text color='textSecondary'>Reviews</Text>
+            </View>
+            <View style={styles.center}>
+              <Text fontWeight='bold'>{count(props.rating)}</Text>
+              <Text color='textSecondary'>Rating</Text>
+            </View>
+          </View>
+        </View>
+        {props.button === true ?
+          <Pressable onPress={openGithub}>
+            <View style={styles.button}>
+              <Text color='white' fontWeight='bold'>Open in Github</Text>
+            </View>
+          </Pressable>
+          : <View></View>}
       </View>
-    </View>
+    </Pressable>
   );
 };
 

@@ -20,22 +20,19 @@ const styles = StyleSheet.create({
 });
 
 const validationSchema = yup.object().shape({
-  username: yup
-    .string()
-    .min(1).max(30)
-    .required('Username is required'),
-  password: yup
-    .string()
-    .min(5).max(50)
-    .required('Password is required')
+  username: yup.string().min(1).max(30).required('Username is required'),
+  password: yup.string().min(5).max(50).required('Password is required'),
+  passwordConfirmation: yup.string()
+    .oneOf([yup.ref('password'), null])
+    .required('Password confirmation is required')
 });
 
 const SignIn = () => {
   const [signIn] = useSignIn();
 
-  const sign = async (username, password) => {
+  const sign = async (username, password, passwordConfirmation) => {
     try {
-      await signIn(username, password);
+      await signIn(username, password, passwordConfirmation);
     } catch (e) {
       console.log(e);
     }
@@ -44,18 +41,19 @@ const SignIn = () => {
   return (
     <View>
       <Formik
-        initialValues={{username: '', password: ''}}
+        initialValues={{username: '', password: '', passwordConfirmation: ''}}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          {sign(values.username, values.password)}
+          {sign(values.username, values.password, values.passwordConfirmation)}
         }}>
         {(props) => (
           <View style={styles.background}>
             <FormikTextInput name='username' placeholder='Username' />
             <FormikTextInput name='password' placeholder='Password' />
+            <FormikTextInput name='passwordConfirmation' placeholder='Password confirmation' />
             <Pressable onPress={props.handleSubmit}>
               <View style={styles.button}>
-                <Text color='white' fontWeight='bold'>Sign in</Text> 
+                <Text color='white' fontWeight='bold'>Sign up</Text> 
               </View>
             </Pressable>
           </View>
